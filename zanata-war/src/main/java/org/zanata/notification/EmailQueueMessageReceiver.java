@@ -42,6 +42,8 @@ import org.zanata.events.LanguageTeamPermissionChangedEvent;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
+import org.zanata.events.TextFlowTargetStateEvent;
+import org.zanata.stats.TranslationEventReceiver;
 
 import static com.google.common.base.Strings.nullToEmpty;
 import static org.zanata.notification.NotificationManager.MessagePropertiesKey;
@@ -69,15 +71,15 @@ import static org.zanata.notification.NotificationManager.MessagePropertiesKey;
 @Slf4j
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class EmailQueueMessageReceiver implements MessageListener {
+public class EmailQueueMessageReceiver extends AbstractPayloadHandler {
 
-    private static Map<String, JmsMessagePayloadHandler> handlers = Collections
+    private static Map<Class, JmsMessagePayloadHandler> handlers = Collections
             .emptyMap();
 
     @In("languageTeamPermissionChangeJmsMessagePayloadHandler")
     private LanguageTeamPermissionChangeJmsMessagePayloadHandler languageTeamHandler;
 
-    @Override
+    /*@Override
     public void onMessage(Message message) {
         if (message instanceof ObjectMessage) {
             try {
@@ -102,17 +104,17 @@ public class EmailQueueMessageReceiver implements MessageListener {
                 Throwables.propagate(e);
             }
         }
-    }
+    }*/
 
-    public Map<String, JmsMessagePayloadHandler> getHandlers() {
+    @Override
+    protected Map<Class, JmsMessagePayloadHandler> getPayloadHandlers() {
         if (handlers.isEmpty()) {
             synchronized (this) {
                 if (handlers.isEmpty()) {
                     handlers =
                             ImmutableMap
-                                    .<String, JmsMessagePayloadHandler> builder()
-                                    .put(LanguageTeamPermissionChangedEvent.class
-                                            .getCanonicalName(),
+                                    .<Class, JmsMessagePayloadHandler> builder()
+                                    .put(LanguageTeamPermissionChangedEvent.class,
                                             languageTeamHandler)
                                     .build();
                 }
@@ -120,9 +122,5 @@ public class EmailQueueMessageReceiver implements MessageListener {
             log.info("email queue payload handlers: {}", handlers);
         }
         return handlers;
-    }
-
-    public static interface JmsMessagePayloadHandler {
-        void handle(Serializable data);
     }
 }

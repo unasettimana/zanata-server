@@ -39,12 +39,7 @@ public interface TranslationStateCache {
      * Informs the cache that a text flow has changed its state in a given
      * locale. (It's really a Text Flow Target state)
      *
-     * @param textFlowId
-     *            The id of the text flow that has changed state.
-     * @param localeId
-     *            The locale for which state has changed.
-     * @param newState
-     *            The new state after the change.
+     * @param event
      */
     void textFlowStateUpdated(TextFlowTargetStateEvent event);
 

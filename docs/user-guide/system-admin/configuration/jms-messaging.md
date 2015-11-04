@@ -10,7 +10,7 @@ Once you have management socking binding open, download the [messaging config fi
 
 > This config file has been tested with EAP6 and Wildfly8.1.0-FINAL
 
-Run 
+Run
 
     jboss-cli.sh --file=path/to/standalone.cli.messaging.config
 
@@ -98,6 +98,10 @@ Verify the result is successful. You should have the configuration file looks li
           </jms-queue>
           <jms-queue name="DLQ">
             <entry name="jms/queue/DLQ"/>
+            <durable>true</durable>
+          </jms-queue>
+          <jms-queue name="TranslationEventQueue">
+            <entry name="java:/jms/queue/TranslationEventQueue"/>
             <durable>true</durable>
           </jms-queue>
         </jms-destinations>

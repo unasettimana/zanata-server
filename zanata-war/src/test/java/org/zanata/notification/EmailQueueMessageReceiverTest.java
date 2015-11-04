@@ -58,6 +58,6 @@ public class EmailQueueMessageReceiverTest {
                 .thenReturn(LanguageTeamPermissionChangedEvent.class.getCanonicalName());
         when(message.getObject()).thenReturn("payload");
         receiver.onMessage(message);
-        verify(languageTeamHandler).handle("payload");
+        verify(languageTeamHandler).handle(any(LanguageTeamPermissionChangedEvent.class));
     }
 }

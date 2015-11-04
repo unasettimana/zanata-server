@@ -1,3 +1,17 @@
+## 3.9
+<h5>Infrastructure Changes</h5>
+* In wildfly or EAP standalone.xml, add the following JMS queue declaration:
+```xml
+  <jms-destinations>
+    ...
+    <jms-queue name="TranslationEventQueue">
+      <entry name="java:/jms/queue/TranslationEventQueue"/>
+      <durable>true</durable>
+    </jms-queue>
+    ...
+  </jms-destinations>
+```
+
 ## 3.8
 <h5>Infrastructure Changes</h5>
 * In wildfly or EAP standalone.xml, change all occurrences of "org.jboss.seam.security.jaas.SeamLoginModule" to "org.zanata.security.jaas.InternalLoginModule"

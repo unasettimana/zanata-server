@@ -40,13 +40,6 @@ public class LanguageTeamPermissionChangeJmsMessagePayloadHandlerTest {
     }
 
     @Test
-    public void willNotHandleWhenEventIsIrrelevant() {
-        handler.handle("not a language team permission change event");
-
-        Mockito.verifyZeroInteractions(emailBuilder, applicationConfiguration);
-    }
-
-    @Test
     public void willNotHandleIfTeamPermissionHasNotChanged() {
         when(permissionChangeEvent.hasPermissionsChanged()).thenReturn(false);
 

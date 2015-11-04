@@ -183,15 +183,24 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
         }
     }
 
-    // TODO why not @Observe the event directly?
     @Override
     public void textFlowStateUpdated(TextFlowTargetStateEvent event) {
         DocumentLocaleKey key =
                 new DocumentLocaleKey(event.getDocumentId(),
                         event.getLocaleId());
 
-        //invalidate document statistic cache
-        clearDocumentStatistics(event.getDocumentId(), event.getLocaleId());
+        // Update the statistics cache info
+        HTextFlow updatedTextFlow = textFlowDAO.findById(event.getTextFlowId());
+        WordStatistic docWordStats = documentStatisticCache.get(key);
+        if(docWordStats != null) {
+            docWordStats.set(event.getPreviousState(),
+                    docWordStats.get(event.getPreviousState()) -
+                            updatedTextFlow.getWordCount().intValue());
+            docWordStats.set(event.getNewState(),
+                    docWordStats.get(event.getNewState()) +
+                            updatedTextFlow.getWordCount().intValue());
+            documentStatisticCache.put(key, docWordStats);
+        }
 
         // update document status information
         updateDocStatusCache(key, event.getTextFlowTargetId());

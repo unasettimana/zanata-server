@@ -59,7 +59,7 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class LanguageTeamPermissionChangeJmsMessagePayloadHandler implements
-        EmailQueueMessageReceiver.JmsMessagePayloadHandler {
+        JmsMessagePayloadHandler<LanguageTeamPermissionChangedEvent> {
     @In
     private EmailBuilder emailBuilder;
 
@@ -71,14 +71,8 @@ public class LanguageTeamPermissionChangeJmsMessagePayloadHandler implements
 
 
     @Override
-    public void handle(Serializable data) {
-        if (!(data instanceof LanguageTeamPermissionChangedEvent)) {
-            log.error("can not handle data other than type {}",
-                    LanguageTeamPermissionChangedEvent.class);
-            return;
-        }
-        LanguageTeamPermissionChangedEvent changedEvent =
-                LanguageTeamPermissionChangedEvent.class.cast(data);
+    public void handle(LanguageTeamPermissionChangedEvent data) {
+        LanguageTeamPermissionChangedEvent changedEvent = data;
         log.debug("language team permission change data:{}", changedEvent);
 
         if (!changedEvent.hasPermissionsChanged()) {
