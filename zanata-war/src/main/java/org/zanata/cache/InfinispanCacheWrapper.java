@@ -24,6 +24,8 @@ import com.google.common.cache.CacheLoader;
 import org.infinispan.Cache;
 import org.infinispan.manager.CacheContainer;
 
+import java.util.function.BiFunction;
+
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
@@ -32,6 +34,7 @@ public class InfinispanCacheWrapper<K, V> implements CacheWrapper<K, V> {
     private final String cacheName;
     private final CacheContainer cacheContainer;
     private CacheLoader<K, V> cacheLoader;
+    private Cache<K, V> cache;
 
     public InfinispanCacheWrapper(String cacheName,
             CacheContainer cacheContainer) {
@@ -77,8 +80,17 @@ public class InfinispanCacheWrapper<K, V> implements CacheWrapper<K, V> {
         return getCache().remove(key) != null;
     }
 
+    @Override
+    public V computeIfPresent(K key,
+            BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+        return getCache().computeIfPresent(key, remappingFunction);
+    }
+
     public Cache<K, V> getCache() {
-        return cacheContainer.getCache(cacheName);
+        if(cache == null) {
+            cache = cacheContainer.getCache(cacheName);
+        }
+        return cache;
     }
 
     public static <K, V> InfinispanCacheWrapper<K, V> create(
