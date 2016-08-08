@@ -2219,6 +2219,8 @@
   <modules>
     <module>zanata-liquibase</module>
     <module>zanata-model</module>
+    <module>zanata-services</module>
+    <module>zanata-webtrans</module>
     <module>zanata-war</module>
     <module>zanata-test-war</module>
     <module>functional-test</module>
